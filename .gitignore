@@ -2,7 +2,6 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
 # C extensions
 *.so
 
@@ -88,6 +87,7 @@ celerybeat-schedule
 env/
 venv/
 ENV/
+planUrDayEnv/*
 env.bak/
 venv.bak/
 
