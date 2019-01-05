@@ -1,6 +1,10 @@
 import React from 'react';
 import Events from '../components/Events';
+import {Form} from 'antd';
 import axios from "axios";
+import EventForm from "../components/EventForm";
+
+const CreateEventForm = Form.create()(EventForm);
 
 class EventList extends React.Component {
     state = {
@@ -8,7 +12,7 @@ class EventList extends React.Component {
     };
 
     componentDidMount() {
-        axios.get('http://127.0.0.1:8000/api/event/')
+        axios.get('http://127.0.0.1:8000/api/')
             .then(res => {
                 this.setState({
                     events: res.data
@@ -18,7 +22,11 @@ class EventList extends React.Component {
 
     render() {
         return (
-            <Events data = {this.state.events}/>
+            <div>
+                <Events data={this.state.events}/>
+                <h2>Create an event</h2>
+                <CreateEventForm requestType='post'/>
+            </div>
         )
     }
 }

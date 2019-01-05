@@ -9,7 +9,7 @@ class EventDetailView extends React.Component {
 
     componentDidMount() {
         const eventID = this.props.match.params.eventID;
-        axios.get(`http://127.0.0.1:8000/api/event/form/${eventID}`)
+        axios.get(`http://127.0.0.1:8000/api/${eventID}`)
             .then(res => {
                 this.setState({
                     event: res.data

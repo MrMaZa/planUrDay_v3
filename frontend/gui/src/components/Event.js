@@ -12,6 +12,7 @@ const dateFormat = 'YYYY/MM/DD';
 
 
 const Event = ({item}) => {
+    console.log(item.startDateTime);
     return (
         <div>
             <h1>Subject</h1>
