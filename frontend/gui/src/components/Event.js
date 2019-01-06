@@ -16,13 +16,13 @@ const Event = ({item}) => {
     return (
         <div>
             <h1>Subject</h1>
-            <a href={`/${item.id}`}>{item.subject}</a>
+            <a href={`/event/${item.id}`}>{item.subject}</a>
             <H3 display={'Place'}/>
             <H3 display={item.place}/>
             <H3 display={'Start date'}/>
-            <DatePicker defaultValue={moment(item.startDateTime, dateFormat)} format={dateFormat} disabled={true}/>
+            <DatePicker defaultValue={moment(item.startDate, dateFormat)} format={dateFormat} disabled={true}/>
             <H3 display={'End date'}/>
-            <DatePicker defaultValue={moment(item.endDateTime, dateFormat)} format={dateFormat} disabled={true}/>
+            <DatePicker defaultValue={moment(item.endDate, dateFormat)} format={dateFormat} disabled={true}/>
             <H3 display={'Description of the event'}/>
             <H3 display={item.description}/>
         </div>
