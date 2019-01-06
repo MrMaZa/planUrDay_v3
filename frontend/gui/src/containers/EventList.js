@@ -12,12 +12,7 @@ class EventList extends React.Component {
         events: []
     };
 
-
-    componentWillReceiveProps(newProps) {
-        axios.defaults.headers = {
-            "Content-Type": "application/json",
-            Authorization: `Token ${newProps.token}`,
-        };
+    componentDidMount() {
         axios.get('http://127.0.0.1:8000/api/')
             .then(res => {
                 this.setState({
@@ -25,6 +20,7 @@ class EventList extends React.Component {
                 });
             })
     }
+
 
     render() {
         return (

@@ -6,6 +6,10 @@ export const authStart = () => {
     }
 };
 export const authSuccess = token => {
+    axios.defaults.headers = {
+        "Content-type": "application/json",
+        Authorization: `Token ${token}`,
+    };
     return {
         type: actionsTypes.AUTH_SUCESS,
         token: token
@@ -19,8 +23,11 @@ export const authFail = error => {
 };
 
 export const logout = () => {
-    localStorage.removeItem('user');
+    localStorage.removeItem('token');
     localStorage.removeItem('expirationDate');
+    axios.defaults.headers = {
+        "Content-type": "application/json",
+    };
     return {
         type: actionsTypes.AUTH_LOGOUT
     }
