@@ -12,7 +12,7 @@ const BaseRouter = () => (
         <Route exact path='/event/:eventID' component={EventDetailView}/>
         <Route exact path='/login' component={Login}/>
         <Route exact path='/signup' component={Signup}/>
-        <Route exact path='/calendar' component={CalendarContainer}/>
+        <Route exact path='/home' component={CalendarContainer}/>
     </div>
 );
 
