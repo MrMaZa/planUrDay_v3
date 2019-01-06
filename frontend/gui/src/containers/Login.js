@@ -17,7 +17,6 @@ class Login extends React.Component {
                 this.props.onAuth(values.userName, values.password)
             }
         });
-        this.props.history.push('/');
     };
 
     render() {

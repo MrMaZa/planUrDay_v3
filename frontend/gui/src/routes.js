@@ -8,7 +8,7 @@ import CalendarContainer from './components/CalendarContainer';
 
 const BaseRouter = () => (
     <div>
-        <Route exact path='/' component={EventList}/>
+        <Route exact path='/events' component={EventList}/>
         <Route exact path='/event/:eventID' component={EventDetailView}/>
         <Route exact path='/login' component={Login}/>
         <Route exact path='/signup' component={Signup}/>

@@ -7,7 +7,11 @@ import {connect} from 'react-redux';
 
 const {Header, Content, Footer} = Layout;
 
-class CustomLayout extends React.Component {
+class LayoutAuth extends React.Component {
+    componentDidMount() {
+        this.props.history.push("/events/");
+    }
+
     render() {
         return (
             <Layout className="layout">
@@ -16,22 +20,28 @@ class CustomLayout extends React.Component {
                     <Menu
                         theme="dark"
                         mode="horizontal"
-                        defaultSelectedKeys={['2']}
+                        defaultSelectedKeys={['4']}
                         style={{lineHeight: '64px'}}
                     >
-                                <Menu.Item key="1">
-                                    <Link to="/login/">Login</Link>
-                                </Menu.Item>
-                                <Menu.Item key="2" style={{float: 'right'}}>
-                                    <Link to="/signup/">Sign up</Link>
-                                </Menu.Item>
+                            <Menu.Item key="1">
+                                <Link to="/add/">Add</Link>
+                            </Menu.Item>
+                            <Menu.Item key="2">
+                                <Link to="/home/">Home</Link>
+                            </Menu.Item>
+                            <Menu.Item key="3">
+                                <Link to="/today/">Today</Link>
+                            </Menu.Item>
+                            <Menu.Item key="4" style={{float: 'right'}}>
+                                <Link to="/login" onClick={this.props.logout}>Log out</Link>
+                            </Menu.Item>
                     </Menu>
                 </Header>
                 <Content style={{padding: '0 50px'}}>
                     <div style={{background: '#fff', padding: 24, minHeight: 500}}>{this.props.children}</div>
                 </Content>
                 <Footer style={{textAlign: 'center'}}>
-                    Ant Design ©2018 Created by Ant UED
+                    Welcome user!
                 </Footer>
             </Layout>
         )
@@ -51,4 +61,4 @@ const mapDispatchToProps = dispatch => {
     }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(CustomLayout));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(LayoutAuth));

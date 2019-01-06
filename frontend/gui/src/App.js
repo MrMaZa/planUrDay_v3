@@ -5,20 +5,32 @@ import {BrowserRouter as Router} from 'react-router-dom';
 import BaseRouter from "./routes";
 import {connect} from 'react-redux';
 import * as actions from './store/actions/auth';
-import './css/app.css'
+import './css/app.css';
+import LayoutAuth from "./containers/LayoutAuth";
 
 class App extends Component {
     componentDidMount() {
         this.props.onTryAutoSignup();
     }
 
+    chooseLayout() {
+        return (
+            this.props.isAuthenticated ?
+                <LayoutAuth {...this.props}>
+                    <BaseRouter/>
+                </LayoutAuth>
+                :
+                <CustomLayout {...this.props}>
+                    <BaseRouter/>
+                </CustomLayout>
+        )
+    }
+
     render() {
         return (
             <div className="App">
                 <Router>
-                    <CustomLayout {...this.props}>
-                        <BaseRouter/>
-                    </CustomLayout>
+                    {this.chooseLayout()}
                 </Router>
             </div>
         );
