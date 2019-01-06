@@ -41,6 +41,7 @@ class CustomLayout extends React.Component {
                         <Breadcrumb.Item><Link to="/">Home</Link></Breadcrumb.Item>
                         <Breadcrumb.Item><Link to="/today">Today events</Link></Breadcrumb.Item>
                         <Breadcrumb.Item><Link to="/add">Add event</Link></Breadcrumb.Item>
+                        <Breadcrumb.Item><Link to="/calendar">Calendar View</Link></Breadcrumb.Item>
                     </Breadcrumb>
                     <div style={{background: '#fff', padding: 24, minHeight: 280}}>{this.props.children}</div>
                 </Content>
