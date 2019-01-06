@@ -5,6 +5,7 @@ import {BrowserRouter as Router} from 'react-router-dom';
 import BaseRouter from "./routes";
 import {connect} from 'react-redux';
 import * as actions from './store/actions/auth';
+import './css/app.css'
 
 class App extends Component {
     componentDidMount() {
