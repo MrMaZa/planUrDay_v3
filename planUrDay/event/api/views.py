@@ -1,18 +1,29 @@
-from event.models import Event
-from event.api.serializers import EventSerializer
 from rest_framework import viewsets
-from rest_framework.authentication import TokenAuthentication
+from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
+
+from event.api.serializers import EventSerializer
+from event.models import Event
 
 
 class EventViewSet(viewsets.ModelViewSet):
     """
-    A viewset for viewing and editing user instances.
+    A viewset for viewing and editing event instances.
     """
-    authentication_classes = TokenAuthentication
     permission_classes = (IsAuthenticated,)
     serializer_class = EventSerializer
     queryset = Event.objects.all()
 
-    def get_queryset(self):
-        return Event.objects.events_for_user(self.request.user)
+    def perform_authentication(self, request):
+        token = request.META.get('HTTP_AUTHORIZATION', '')[6:]
+        request.user = Token.objects.get(key=token).user
+        return request.user
+
+    def filter_queryset(self, queryset):
+        return queryset.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def perform_update(self, serializer):
+        serializer.save(user=self.request.user)

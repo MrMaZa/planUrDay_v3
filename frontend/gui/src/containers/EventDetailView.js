@@ -14,13 +14,12 @@ class EventDetailView extends React.Component {
                 this.setState({
                     event: res.data
                 });
-            })
+            });
     }
 
     render() {
         return (
             <Card title={this.state.event.subject}>
-
             </Card>
         )
     }

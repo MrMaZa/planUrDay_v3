@@ -7,11 +7,6 @@ class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = (
-            'id', 'eventType', 'eventCategory', 'subject', 'place',
+            'id', 'eventType', 'eventCategory', 'subject', 'place', 'startDate', 'endDate', 'startTime', 'endTime',
             'description')
 
-    def create(self, validated_data):
-        data = validated_data.copy()
-        data['user'] = self.context['request'].user
-
-        return super(EventSerializer, self).create(data)

@@ -3,6 +3,7 @@ import Events from '../components/Events';
 import {Form} from 'antd';
 import axios from "axios";
 import EventForm from "../components/EventForm";
+import {connect} from "react-redux";
 
 const CreateEventForm = Form.create()(EventForm);
 
@@ -11,7 +12,12 @@ class EventList extends React.Component {
         events: []
     };
 
-    componentDidMount() {
+
+    componentWillReceiveProps(newProps) {
+        axios.defaults.headers = {
+            "Content-Type": "application/json",
+            Authorization: `Token ${newProps.token}`,
+        };
         axios.get('http://127.0.0.1:8000/api/')
             .then(res => {
                 this.setState({
@@ -31,4 +37,10 @@ class EventList extends React.Component {
     }
 }
 
-export default EventList;
+const mapStateToProps = state => {
+    return {
+        token: state.token
+    }
+};
+
+export default connect(mapStateToProps)(EventList);

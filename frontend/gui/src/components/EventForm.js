@@ -1,4 +1,4 @@
-import {Button, DatePicker, Form, Input, Select} from 'antd';
+import {Button, DatePicker, Form, Input, Select, TimePicker} from 'antd';
 import React from 'react';
 import axios from "axios";
 import PropTypes from "prop-types";
@@ -6,7 +6,7 @@ import moment from 'moment';
 
 const {Option} = Select;
 
-const DateFormat = 'YYYY/MM/DD';
+const DateFormat = 'YYYY-MM-DD';
 const TimeFormat = 'HH:mm';
 
 const mappedDateAndTimeWithValues = (values) => {
@@ -23,18 +23,6 @@ class EventForm extends React.Component {
     static propTypes = {
         requestType: PropTypes.string.isRequired,
         eventID: PropTypes.number,
-    };
-
-    state = {
-        id: null,
-        subject: '',
-        place: '',
-        startDate: null,
-        endDate: null,
-        eventType: '',
-        eventCategory: '',
-        description: '',
-        userId: '',
     };
 
     componentDidMount() {
@@ -55,13 +43,15 @@ class EventForm extends React.Component {
             console.log('Received values of form: ', values);
         });
         const preparedValues = mappedDateAndTimeWithValues(this.props.form.getFieldsValue());
-        const {id, subject, place, startDate, endDate, eventType, eventCategory, description, userId} = preparedValues;
+        const {id, subject, place, startDate, startTime, endDate, endTime, eventType, eventCategory, description, userId} = preparedValues;
         const eventToSave = {
             id,
             subject,
             place,
             startDate,
+            startTime,
             endDate,
+            endTime,
             eventType,
             eventCategory,
             description,
@@ -86,11 +76,11 @@ class EventForm extends React.Component {
     render() {
         const configDate = {
             initialValue: moment(moment.now()),
-            rules: [{type: 'object', required: true, message: 'Please select date!', format: 'DD/MM/YYYY'}],
+            rules: [{type: 'object', required: true, message: 'Please select date!'}],
         };
         const configTime = {
             initialValue: moment(moment.now()),
-            rules: [{type: 'object', required: true, message: 'Please select time!', format: 'HH:MM'}],
+            rules: [{type: 'object', required: true, message: 'Please select time!'}],
         };
         const {getFieldDecorator} = this.props.form;
 
@@ -144,7 +134,7 @@ class EventForm extends React.Component {
                     label="Start Date"
                 >
                     {getFieldDecorator('startDate', configDate)(
-                        <DatePicker name="startDate"/>
+                        <DatePicker format={DateFormat}/>
                     )}
                 </Form.Item>
                 <Form.Item
@@ -152,7 +142,7 @@ class EventForm extends React.Component {
                     label="End Date"
                 >
                     {getFieldDecorator('endDate', configDate)(
-                        <DatePicker name="endDate"/>
+                        <DatePicker format={DateFormat}/>
                     )}
                 </Form.Item>
                 <Form.Item
@@ -160,7 +150,7 @@ class EventForm extends React.Component {
                     label="Start Time"
                 >
                     {getFieldDecorator('startTime', configTime)(
-                        <DatePicker name="startTime"/>
+                        <TimePicker format={TimeFormat} minuteStep={15}/>
                     )}
                 </Form.Item>
                 <Form.Item
@@ -168,7 +158,7 @@ class EventForm extends React.Component {
                     label="End Time"
                 >
                     {getFieldDecorator('endTime', configTime)(
-                        <DatePicker name="endTime"/>
+                        <TimePicker format={TimeFormat} minuteStep={15}/>
                     )}
                 </Form.Item>
                 <Form.Item
