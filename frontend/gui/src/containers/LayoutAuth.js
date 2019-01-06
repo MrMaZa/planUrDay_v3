@@ -9,7 +9,7 @@ const {Header, Content, Footer} = Layout;
 
 class LayoutAuth extends React.Component {
     componentDidMount() {
-        this.props.history.push("/calendar");
+        this.props.history.push("/home");
     }
 
     render() {
