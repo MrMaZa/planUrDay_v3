@@ -1,12 +1,18 @@
 import React from 'react';
 import {Calendar, Badge } from 'antd'
 import '../css/calendar-container.css'
+import axios from 'axios'
+import Loader from '../components/loader/loader'
 
 
 
 function getListData(value) {
     let listData;
+    
+    console.log(value.date())
+    console.log(value)
     switch (value.date()) {
+
       case 8:
         listData = [
           { type: 'warning', content: 'This is warning event.' },
@@ -29,23 +35,16 @@ function getListData(value) {
         ]; break;
       default:
     }
-    return listData || [];
+    let data = {
+      month: 8,
+      listData
+    }
+
+
+
+    return data.month === value.date() ? data.listData : [];
   }
-  
-  function dateCellRender(value) {
-    const listData = getListData(value);
-    return (
-      <ul className="events">
-        {
-          listData.map(item => (
-            <li key={item.content}>
-              <Badge status={item.type} text={item.content} />
-            </li>
-          ))
-        }
-      </ul>
-    );
-  }
+
   
   function getMonthData(value) {
     if (value.month() === 8) {
@@ -64,38 +63,68 @@ function getListData(value) {
   }
 
 class CalendarContainer extends React.Component {
+
+  state = {
+    events: [],
+    isLoaded: false
+  }
     
-    dateCellRender = (value, model) => {
-        console.log(value, model)
-
-    }
-
     monthCellRender = (value, model) => {
-        console.log(value, model)
+    
 
     }
     onPanelChange = (value, model) => {
-        console.log(value, model)
 
     }
     onSelect = (value, model) => {
-        console.log('onselect')
-        console.log(value, model)
+       
 
     }
 
+    dateCellRender(currentCellMonth) {
+      const listData = getListData(currentCellMonth);
+      return (
+        <ul className="events">
+          {
+            listData.map(item => (
+              <li key={item.content}>
+                <Badge status={item.type} text={item.content} />
+              </li>
+            ))
+          }
+        </ul>
+      );
+    }
+
+    componentDidMount() {
+      axios.get('http://127.0.0.1:8000/api/')
+          .then(res => {
+              console.log(res)
+              this.setState({
+                  events: res.data,
+                  isLoaded: true
+              });
+          })
+  }
+
 
     render() {
+      if(this.state.isLoaded){
         return (
-            <div>
-                <h1 className='yuri-calendar'> Yuriialendar</h1>
-                <Calendar dateCellRender={dateCellRender}
-                          monthCellRender={monthCellRender}
-                          onPanelChange={this.onPanelChange}
-                          onSelect={this.onSelect}>
-                </Calendar>
-            </div>
+          <div>
+              <h1 className='yuri-calendar'> Yuriialendar</h1>
+              <Calendar dateCellRender={this.dateCellRender}
+                        monthCellRender={monthCellRender}
+                        onPanelChange={this.onPanelChange}
+                        onSelect={this.onSelect}>
+              </Calendar>
+          </div>
+      )
+      } else {
+        return (
+          <Loader></Loader>
         )
+      }
     }
 }
 
