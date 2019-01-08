@@ -2,10 +2,12 @@ import React, {Component} from 'react';
 import 'antd/dist/antd.css';
 import CustomLayout from './containers/Layout';
 import {BrowserRouter as Router} from 'react-router-dom';
-import BaseRouter from "./routes";
+import NotAuthRoutes from "./NotAuthRoutes";
+import AuthRoutes from "./AuthRoutes";
 import {connect} from 'react-redux';
 import * as actions from './store/actions/auth';
 import './css/app.css';
+import './css/bootstrap.css'
 import LayoutAuth from "./containers/LayoutAuth";
 
 class App extends Component {
@@ -17,11 +19,11 @@ class App extends Component {
         return (
             this.props.isAuthenticated ?
                 <LayoutAuth {...this.props}>
-                    <BaseRouter/>
+                    <AuthRoutes/>
                 </LayoutAuth>
                 :
                 <CustomLayout {...this.props}>
-                    <BaseRouter/>
+                    <NotAuthRoutes/>
                 </CustomLayout>
         )
     }

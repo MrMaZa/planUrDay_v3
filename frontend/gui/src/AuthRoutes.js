@@ -5,10 +5,17 @@ import EventDetailView from "./containers/EventDetailView";
 import Login from './containers/Login';
 import Signup from './containers/Signup';
 import CalendarContainer from './components/CalendarContainer';
+import EventForm from "./components/forms/EventForm";
 
-const BaseRouter = () => (
+const addEventForm = () => {
+    return (
+        <EventForm requestType='post'/>
+    )
+};
+const AuthRouter = () => (
     <div>
         <Route exact path='/events' component={EventList}/>
+        <Route exact path='/add' component={addEventForm}/>
         <Route exact path='/event/:eventID' component={EventDetailView}/>
         <Route exact path='/login' component={Login}/>
         <Route exact path='/signup' component={Signup}/>
@@ -16,4 +23,4 @@ const BaseRouter = () => (
     </div>
 );
 
-export default BaseRouter;
+export default AuthRouter;

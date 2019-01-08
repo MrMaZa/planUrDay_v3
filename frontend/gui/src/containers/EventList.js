@@ -2,7 +2,7 @@ import React from 'react';
 import Events from '../components/Events';
 import {Form} from 'antd';
 import axios from "axios";
-import EventForm from "../components/EventForm";
+import EventForm from "../components/forms/EventForm";
 import {connect} from "react-redux";
 
 const CreateEventForm = Form.create()(EventForm);
