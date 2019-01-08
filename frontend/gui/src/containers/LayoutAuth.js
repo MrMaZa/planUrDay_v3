@@ -1,5 +1,5 @@
 import React from 'react';
-import {Breadcrumb, Layout, Menu} from 'antd';
+import {Layout, Menu} from 'antd';
 import {Link, withRouter} from "react-router-dom";
 import * as actions from "../store/actions/auth";
 import {connect} from 'react-redux';
@@ -20,21 +20,22 @@ class LayoutAuth extends React.Component {
                     <Menu
                         theme="dark"
                         mode="horizontal"
+                        selectable={false}
                         defaultSelectedKeys={['4']}
                         style={{lineHeight: '64px'}}
                     >
-                            <Menu.Item key="1">
-                                <Link to="/add/">Add</Link>
-                            </Menu.Item>
-                            <Menu.Item key="2">
-                                <Link to="/home/">Home</Link>
-                            </Menu.Item>
-                            <Menu.Item key="3">
-                                <Link to="/today/">Today</Link>
-                            </Menu.Item>
-                            <Menu.Item key="4" style={{float: 'right'}}>
-                                <Link to="/login" onClick={this.props.logout}>Log out</Link>
-                            </Menu.Item>
+                        <Menu.Item key="1">
+                            <Link to="/add/">Add</Link>
+                        </Menu.Item>
+                        <Menu.Item key="2">
+                            <Link to="/home/">Home</Link>
+                        </Menu.Item>
+                        <Menu.Item key="3">
+                            <Link to="/today/">Today</Link>
+                        </Menu.Item>
+                        <Menu.Item key="4" style={{float: 'right'}}>
+                            <Link to="/login" onClick={this.props.logout}>Log out</Link>
+                        </Menu.Item>
                     </Menu>
                 </Header>
                 <Content style={{padding: '0 50px'}}>

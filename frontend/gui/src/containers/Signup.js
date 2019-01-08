@@ -18,9 +18,9 @@ class Signup extends React.Component {
                     values.email,
                     values.password,
                     values.confirm)
+                this.props.history.push('/');
             }
         });
-        this.props.history.push('/');
     }
 
     handleConfirmBlur = (e) => {
@@ -80,7 +80,7 @@ class Signup extends React.Component {
                             validator: this.validateToNextPassword,
                         }],
                     })(
-                        <Input prefix={<Icon type="lock" style={{color: 'rgba(0,0,0,.25)'}}/>}
+                        <Input type="password" prefix={<Icon type="lock" style={{color: 'rgba(0,0,0,.25)'}}/>}
                                placeholder="Password"/>
                     )}
                 </Form.Item>
@@ -93,7 +93,7 @@ class Signup extends React.Component {
                             validator: this.compareToFirstPassword,
                         }],
                     })(
-                        <Input prefix={<Icon type="lock" style={{color: 'rgba(0,0,0,.25)'}}/>}
+                        <Input type="password" prefix={<Icon type="lock" style={{color: 'rgba(0,0,0,.25)'}}/>}
                                placeholder="Password" onBlur={this.handleConfirmBlur}/>
                     )}
                 </Form.Item>
