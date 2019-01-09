@@ -23,9 +23,7 @@ class FormEvent extends React.Component {
 
     componentDidMount() {
         if (this.props.requestType === 'put') {
-            axios.get(`http://127.0.0.1:8000/api/${this.props.eventID}`).then(res => {
-                this.props.form.setFieldsValue(res)
-            }).catch(error => console.error(error));
+            console.log(this.props.location.state.event);
         }
         this.setState({
             isLoaded: true

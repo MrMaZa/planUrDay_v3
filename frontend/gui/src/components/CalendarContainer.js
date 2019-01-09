@@ -1,138 +1,157 @@
 import React from 'react';
-import {Badge, Calendar} from 'antd'
 import '../css/calendar-container.css'
-import axios from 'axios'
 import Loader from '../components/loader/loader'
-import {serverAdress} from '../api/config'
+import moment from "moment";
+import {DateFormat, TimeFormat} from "../util/DateTimeUtil";
+import FullCalendar from "fullcalendar-reactwrapper";
+import '../css/fullcalendar.css';
+import {getAllEvents, updateEvent} from "../api/eventRepository";
+import {Redirect, withRouter} from "react-router-dom";
 
 
-
-
-
-function getMonthData(value) {
-    if (value.month() === 8) {
-        return 1394;
-    }
+function mapToComponentDataStructure(event) {
+    const startDate = moment(event.startDate).format(DateFormat);
+    const endDate = moment(event.endDate).format(DateFormat);
+    const startTime = moment(event.startTime, TimeFormat).format(TimeFormat);
+    const endTime = moment(event.endTime, TimeFormat).format(TimeFormat);
+    const start = moment(startDate + ' ' + startTime, 'YYYY-MM-DD HH:mm');
+    const end = moment(endDate + ' ' + endTime, 'YYYY-MM-DD HH:mm');
+    const mappedEvent = {
+        id: event.id,
+        title: event.subject,
+        allDay: event.eventType === 'All_day',
+        color: event.eventCategory,
+        textColor: event.eventCategory === 'Yellow' ? 'black' : 'white',
+        start: start,
+        end: end,
+        place: event.place,
+        eventType: event.eventType,
+        eventCategory: event.eventCategory,
+        description: event.description
+    };
+    return mappedEvent;
 }
 
-function monthCellRender(value) {
-    const num = getMonthData(value);
-    return num ? (
-        <div className="notes-month">
-            <section>{num}</section>
-            <span>Backlog number</span>
-        </div>
-    ) : null;
+function mapToOriginalDataStructure(event) {
+    const {id, title, start, end, place, description, eventType, eventCategory} = event;
+    const startDate = start.format(DateFormat);
+    const endDate = end.format(DateFormat);
+    const startTime = start.format(TimeFormat);
+    const endTime = end.format(TimeFormat);
+    const mappedEvent = {
+        id: id,
+        subject: title,
+        place: place,
+        startDate: startDate,
+        endDate: endDate,
+        startTime: startTime,
+        endTime: endTime,
+        description: description,
+        eventType: eventType,
+        eventCategory: eventCategory
+    };
+    return mappedEvent;
 }
+
 
 class CalendarContainer extends React.Component {
 
     state = {
         events: [],
-        isLoaded: false
-    }
+        isLoaded: false,
+        eventId: null,
+    };
 
-    monthCellRender = (value, model) => {
-
-
-    }
-    onPanelChange = (value, model) => {
-
-    }
-    onSelect = (value, model) => {
-
-
-    }
-
-    splitDate(date) {
-        return date.split('-')[2]
-    }
-
-    getListData(value){
-        let listData;
-    
-        console.log(+this.splitDate(this.state.events[0].startDate))
-
-        if (value.date() === +this.splitDate(this.state.events[0].startDate)) {
-            return [
-                            {type: 'success', content: this.state.events[0].description},
-                        ]
-        }
-        // switch (value.date()) {
-    
-        //     case 8:
-        //         listData = [
-        //             {type: 'warning', content: 'This is warning event.'},
-        //             {type: 'success', content: 'This is usual event.'},
-        //         ];
-        //         break;
-        //     case 10:
-        //         listData = [
-        //             {type: 'warning', content: 'This is warning event.'},
-        //             {type: 'success', content: 'This is usual event.'},
-        //             {type: 'error', content: 'This is error event.'},
-        //         ];
-        //         break;
-        //     case 15:
-        //         listData = [
-        //             {type: 'warning', content: 'This is warning event'},
-        //             {type: 'success', content: 'This is very long usual event。。....'},
-        //             {type: 'error', content: 'This is error event 1.'},
-        //             {type: 'error', content: 'This is error event 2.'},
-        //             {type: 'error', content: 'This is error event 3.'},
-        //             {type: 'error', content: 'This is error event 4.'},
-        //         ];
-        //         break;
-        //     default:
-        // }
-        // let data = {
-        //     month: 8,
-        //     listData
-        // }
-    
-    
-        return  [];
-    }
-
-    dateCellRender = (currentCellMonth) => {
-        const listData = this.getListData(currentCellMonth);
-        return (
-            <ul className="events">
-                {
-                    listData.map(item => (
-                        <li key={item.content}>
-                            <Badge status={item.type} text={item.content}/>
-                        </li>
-                    ))
-                }
-            </ul>
-        );
+    constructor(props) {
+        super(props);
     }
 
     componentDidMount() {
-        axios.get(serverAdress)
+        this.setState({
+            eventId: null
+        });
+        getAllEvents()
             .then(res => {
-                console.log(res)
+                const mappedEvents = res.data.map(event => mapToComponentDataStructure(event));
                 this.setState({
-                    events: res.data,
+                    events: mappedEvents,
                     isLoaded: true
                 });
             })
     }
 
-    
+    updateEvent(event, revertFunc) {
+        const mappedEvent = mapToOriginalDataStructure(event);
+        updateEvent(mappedEvent)
+            .then(res => console.log(res))
+            .catch(error => {
+                console.error(error);
+                revertFunc()
+            });
+    }
 
+    onEventDrop(event, revertFunc) {
+        if (event.end === null) {
+            event.end = moment(event.start.clone().format(DateFormat), DateFormat)
+        }
+        this.updateEvent(event, revertFunc)
+    }
+
+    onEventResize(event, duration, revertFunc) {
+        this.updateEvent(event, revertFunc)
+    }
 
     render() {
-        if (this.state.isLoaded) {
+        if (this.state.eventId) {
+            console.log('inside redirection')
+            return <Redirect to={{pathName: "/update", state: {event: this.state.eventId}}}/>
+        } else if (this.state.isLoaded) {
             return (
                 <div>
-                    <h1 className='yuri-calendar'> Yuriialendar</h1>
-                    <Calendar dateCellRender={this.dateCellRender}
-                              monthCellRender={monthCellRender}
-                              onPanelChange={this.onPanelChange}
-                              onSelect={this.onSelect}>
-                    </Calendar>
+                    <FullCalendar
+                        header={{
+                            left: 'prev, next today',
+                            center: 'title',
+                            right: 'month,agendaWeek,agendaDay'
+                        }}
+                        views={{
+                            ...{
+                                basicDay: {
+                                    type: 'agenda',
+                                },
+                                basicWeek: {
+                                    type: 'agenda',
+                                },
+                            }
+                        }}
+                        themeSystem='bootstrap4'
+                        contentHeight={850}
+                        defaultDate={moment.now()}
+                        navLinks={true}
+                        editable={true}
+                        eventDurationEditable={true}
+                        eventLimit={true}
+                        events={{
+                            ...{
+                                events: this.state.events,
+                                height: 500,
+                                timeFormat: 'HH:mm',
+                                eventLimit: true,
+                                editable: true,
+                                droppable: true,
+                                resizable: true,
+                                eventDurationEditable: true,
+                                dragScroll: true,
+                            }
+                        }}
+                        eventResize={(event, duration, revertFunc) => this.onEventResize(event, duration, revertFunc)}
+                        eventDrop={(event, delta, revertFunc) => this.onEventDrop(event, revertFunc)}
+                        onSelect={(event) => console.log(event)}
+                        eventClick={(event) => {
+                            console.log('here we are');
+                            this.setState({eventId: event.id})
+                        }}
+                    />
                 </div>
             )
         } else {
@@ -143,4 +162,4 @@ class CalendarContainer extends React.Component {
     }
 }
 
-export default CalendarContainer;
+export default withRouter(CalendarContainer);

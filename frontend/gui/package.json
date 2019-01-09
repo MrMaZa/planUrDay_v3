@@ -5,6 +5,7 @@
   "dependencies": {
     "antd": "^3.12.1",
     "axios": "^0.18.0",
+    "fullcalendar-reactwrapper": "^1.0.7",
     "moment": "^2.23.0",
     "prop-types": "^15.6.2",
     "react": "^16.7.0",
