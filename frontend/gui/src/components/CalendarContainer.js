@@ -3,46 +3,10 @@ import {Badge, Calendar} from 'antd'
 import '../css/calendar-container.css'
 import axios from 'axios'
 import Loader from '../components/loader/loader'
+import {serverAdress} from '../api/config'
 
 
-function getListData(value) {
-    let listData;
 
-    switch (value.date()) {
-
-        case 8:
-            listData = [
-                {type: 'warning', content: 'This is warning event.'},
-                {type: 'success', content: 'This is usual event.'},
-            ];
-            break;
-        case 10:
-            listData = [
-                {type: 'warning', content: 'This is warning event.'},
-                {type: 'success', content: 'This is usual event.'},
-                {type: 'error', content: 'This is error event.'},
-            ];
-            break;
-        case 15:
-            listData = [
-                {type: 'warning', content: 'This is warning event'},
-                {type: 'success', content: 'This is very long usual event。。....'},
-                {type: 'error', content: 'This is error event 1.'},
-                {type: 'error', content: 'This is error event 2.'},
-                {type: 'error', content: 'This is error event 3.'},
-                {type: 'error', content: 'This is error event 4.'},
-            ];
-            break;
-        default:
-    }
-    let data = {
-        month: 8,
-        listData
-    }
-
-
-    return data.month === value.date() ? data.listData : [];
-}
 
 
 function getMonthData(value) {
@@ -80,8 +44,58 @@ class CalendarContainer extends React.Component {
 
     }
 
-    dateCellRender(currentCellMonth) {
-        const listData = getListData(currentCellMonth);
+    splitDate(date) {
+        return date.split('-')[2]
+    }
+
+    getListData(value){
+        let listData;
+    
+        console.log(+this.splitDate(this.state.events[0].startDate))
+
+        if (value.date() === +this.splitDate(this.state.events[0].startDate)) {
+            return [
+                            {type: 'success', content: this.state.events[0].description},
+                        ]
+        }
+        // switch (value.date()) {
+    
+        //     case 8:
+        //         listData = [
+        //             {type: 'warning', content: 'This is warning event.'},
+        //             {type: 'success', content: 'This is usual event.'},
+        //         ];
+        //         break;
+        //     case 10:
+        //         listData = [
+        //             {type: 'warning', content: 'This is warning event.'},
+        //             {type: 'success', content: 'This is usual event.'},
+        //             {type: 'error', content: 'This is error event.'},
+        //         ];
+        //         break;
+        //     case 15:
+        //         listData = [
+        //             {type: 'warning', content: 'This is warning event'},
+        //             {type: 'success', content: 'This is very long usual event。。....'},
+        //             {type: 'error', content: 'This is error event 1.'},
+        //             {type: 'error', content: 'This is error event 2.'},
+        //             {type: 'error', content: 'This is error event 3.'},
+        //             {type: 'error', content: 'This is error event 4.'},
+        //         ];
+        //         break;
+        //     default:
+        // }
+        // let data = {
+        //     month: 8,
+        //     listData
+        // }
+    
+    
+        return  [];
+    }
+
+    dateCellRender = (currentCellMonth) => {
+        const listData = this.getListData(currentCellMonth);
         return (
             <ul className="events">
                 {
@@ -96,7 +110,7 @@ class CalendarContainer extends React.Component {
     }
 
     componentDidMount() {
-        axios.get('http://127.0.0.1:8000/api/')
+        axios.get(serverAdress)
             .then(res => {
                 console.log(res)
                 this.setState({
@@ -105,6 +119,8 @@ class CalendarContainer extends React.Component {
                 });
             })
     }
+
+    
 
 
     render() {
