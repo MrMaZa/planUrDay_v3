@@ -8,7 +8,9 @@ import DateRange from "./parts/DateRange";
 import TimeRange from "./parts/TimeRange";
 import Subject from "./parts/Subject";
 import {FormLayout} from "./FormLayout";
-import {mappedDateAndTimeWithValues} from "../../util/DateTimeUtil";
+import {mapDateAndTimeToMoment, mappedDateAndTimeWithValues, TimeFormat} from "../../util/DateTimeUtil";
+import {deleteEvent, getEventById} from "../../api/eventRepository";
+import moment from "moment";
 
 const {Option} = Select;
 
@@ -23,11 +25,31 @@ class FormEvent extends React.Component {
 
     componentDidMount() {
         if (this.props.requestType === 'put') {
-            console.log(this.props.location.state.event);
+            getEventById(this.props.location.state.eventId).then(res => {
+                const event = res.data;
+                const mappedEvent = mapDateAndTimeToMoment(event);
+                console.log(mappedEvent)
+                this.props.form.setFieldsValue({...mappedEvent});
+                const startTime = mappedEvent.startTime;
+                const endTime = mappedEvent.endTime;
+                const difference = moment(moment.utc(endTime.diff(startTime)).format(TimeFormat), TimeFormat);
+                this.props.form.setFieldsValue({
+                    duration: difference
+                })
+            })
+            this.setState({
+                eventID: this.props.location.state.eventId,
+                isLoaded: true
+            })
+        } else {
+            this.setState({
+                isLoaded: true
+            })
         }
-        this.setState({
-            isLoaded: true
-        })
+    }
+
+    delete = () => {
+        deleteEvent(this.state.eventID).then(res => this.props.history.goBack()).catch(err => console.error(err))
     }
 
 
@@ -36,7 +58,7 @@ class FormEvent extends React.Component {
         this.props.form.validateFieldsAndScroll((err, fieldsValue) => {
             if (!err) {
                 const preparedValues = mappedDateAndTimeWithValues(fieldsValue);
-                const {id, subject, place, startDate, startTime, endDate, endTime, eventType, eventCategory, description, userId} = preparedValues;
+                const {id, subject, place, startDate, startTime, endDate, endTime, eventType, eventCategory, description} = preparedValues;
                 const eventToSave = {
                     id,
                     subject,
@@ -48,13 +70,15 @@ class FormEvent extends React.Component {
                     eventType,
                     eventCategory,
                     description,
-                    userId
                 };
                 switch (requestType) {
                     case 'put' : {
                         axios.put(`http://127.0.0.1:8000/api/${eventID}/`, eventToSave)
                             .then(res => console.log(res))
                             .catch(error => console.error(error));
+                        this.setState({
+                            eventID: false,
+                        });
                         break
                     }
                     case 'post' : {
@@ -65,6 +89,9 @@ class FormEvent extends React.Component {
                     }
                 }
             }
+            this.setState({
+                isLoaded: false
+            });
             this.props.history.goBack();
         });
     };
@@ -75,13 +102,15 @@ class FormEvent extends React.Component {
             return (
                 <Form.Item>
                     <h1 className="d-lg-inline-block container-fluid">
-                        <Button className="ant-btn-circle btn-outline-primary float-left" htmlType="button"
-                                onClick={this.props.history.goBack}><Icon
-                            type="close"/></Button>
+                        <Button className="ant-btn-circle-outline float-left" shape="circle" icon="close"
+                                onClick={this.props.history.goBack}/>
                         <span
-                            className="col-md-4 col-md-offset-3">{this.props.eventID ? 'Update event' : 'Add a new event'}</span>
+                            className="col-md-4 col-md-offset-3">{this.state.eventID ? 'Update event' : 'Add a new event'}</span>
                         <Button className="btn btn-primary col-md-1" type="primary"
                                 htmlType="submit">Save</Button>
+                        {this.state.eventID ?
+                            <Button className="float-right" icon="delete" onClick={this.delete}/> : null
+                        }
                     </h1>
                 </Form.Item>
             )
@@ -90,7 +119,7 @@ class FormEvent extends React.Component {
         if (this.state.isLoaded) {
             return (
                 <React.Fragment>
-                    <Form onSubmit={(event) => this.handleSubmit(event, this.props.requestType, this.props.eventID)}>
+                    <Form onSubmit={(event) => this.handleSubmit(event, this.props.requestType, this.state.eventID)}>
                         <FormHeader/>
                         <Subject {...{
                             form: this.props.form,

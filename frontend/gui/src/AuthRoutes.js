@@ -1,5 +1,5 @@
 import React from 'react';
-import {Route, Switch} from 'react-router-dom';
+import {Redirect, Route, Switch} from 'react-router-dom';
 import EventList from "./containers/EventList";
 import EventDetailView from "./containers/EventDetailView";
 import Login from './containers/Login';
@@ -27,6 +27,7 @@ const AuthRouter = () => (
         <Route exact path='/login' component={Login}/>
         <Route exact path='/signup' component={Signup}/>
         <Route exact path='/home' component={CalendarContainer}/>
+        <Redirect exact from="/" to="/home"/>
     </Switch>
 );
 

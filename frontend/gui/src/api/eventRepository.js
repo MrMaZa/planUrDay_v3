@@ -10,7 +10,7 @@ export function getAllEventsByMounth(month) {
 }
 
 export function getEventById(eventId) {
-    return axios.get(`${serverAddress}${eventId}`)
+    return axios.get(`${serverAddress}${eventId}/`)
 }
 
 export function createEvent(event) {
@@ -21,6 +21,6 @@ export function updateEvent(event) {
     return axios.put(`${serverAddress}${event.id}/`, event)
 }
 
-export function deleteEvent(event) {
-    return axios.delete(`${serverAddress}${event.id}`)
+export function deleteEvent(eventId) {
+    return axios.delete(`${serverAddress}${eventId}/`)
 }

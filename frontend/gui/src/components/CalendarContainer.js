@@ -6,7 +6,8 @@ import {DateFormat, TimeFormat} from "../util/DateTimeUtil";
 import FullCalendar from "fullcalendar-reactwrapper";
 import '../css/fullcalendar.css';
 import {getAllEvents, updateEvent} from "../api/eventRepository";
-import {Redirect, withRouter} from "react-router-dom";
+import {Redirect, Switch, withRouter} from "react-router-dom";
+import EventForm from "./forms/EventForm";
 
 
 function mapToComponentDataStructure(event) {
@@ -101,10 +102,17 @@ class CalendarContainer extends React.Component {
         this.updateEvent(event, revertFunc)
     }
 
+
     render() {
         if (this.state.eventId) {
-            console.log('inside redirection')
-            return <Redirect to={{pathName: "/update", state: {event: this.state.eventId}}}/>
+            return <Switch>
+                <Redirect push to={{
+                    pathname: "/update",
+                    state: {
+                        eventId: this.state.eventId,
+                    }
+                }}/>
+            </Switch>
         } else if (this.state.isLoaded) {
             return (
                 <div>
@@ -148,7 +156,6 @@ class CalendarContainer extends React.Component {
                         eventDrop={(event, delta, revertFunc) => this.onEventDrop(event, revertFunc)}
                         onSelect={(event) => console.log(event)}
                         eventClick={(event) => {
-                            console.log('here we are');
                             this.setState({eventId: event.id})
                         }}
                     />
