@@ -88,11 +88,11 @@ class FormEvent extends React.Component {
                         break
                     }
                 }
+                this.setState({
+                    isLoaded: false
+                });
+                this.props.history.goBack();
             }
-            this.setState({
-                isLoaded: false
-            });
-            this.props.history.goBack();
         });
     };
 
