@@ -51,5 +51,5 @@ class Event(models.Model):
     objects = EventQuerySet.as_manager()
 
     def __str__(self):
-        return "Meeting {0} of type {1} on {2}-{3}".format(self.subject, self.eventType, self.startDate,
+        return "Event {0} of type {1} on {2}-{3}".format(self.subject, self.eventType, self.startDate,
                                                            self.endDate)
